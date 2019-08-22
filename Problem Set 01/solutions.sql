@@ -42,5 +42,13 @@ inner join hotel as h on b.hotel_No=h.hotel_No where month(Date_From)=8 and h.ci
 select  h.name,r.hotel_no,r.room_No from room r left join booking b on r.room_No=b.room_No inner join hotel h on h.hotel_no=r.hotel_no where b.room_No is null;
 
 #13.List the hotel name and city of the hotel with the highest priced room.
-select h.name,h.city from hotel as h inner join room as r on h.hotel_No=r.hotel_No ;
-select room_No,hotel_No,price,
+select h.name,h.city from  (
+select room_No,hotel_No,price,dense_rank() over (order by price desc) as price_rank from room) as a inner join hotel h 
+on a.hotel_No=h.hotel_No where price_rank =1;
+
+#14.List hotel names, room numbers, cities, and prices for hotels that have rooms with prices 
+#lower than the lowest priced room in a Boston hotel.
+select r.price from room as r inner join hotel as h on r.hotel_No=h.hotel_No where h.name='Boston hotel';
+
+#15.List the average price of a room grouped by city.
+select avg(r.price),h.name from room r left join hotel h on r.hotel_No=h.hotel_No group by h.hotel_No;
