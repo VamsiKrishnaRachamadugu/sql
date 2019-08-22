@@ -48,7 +48,8 @@ on a.hotel_No=h.hotel_No where price_rank =1;
 
 #14.List hotel names, room numbers, cities, and prices for hotels that have rooms with prices 
 #lower than the lowest priced room in a Boston hotel.
-select r.price from room as r inner join hotel as h on r.hotel_No=h.hotel_No where h.name='Boston hotel';
+select h.name,r.room_No,h.city,r.price from room as r inner join hotel as h on r.hotel_No=h.hotel_No where r.price <
+(select min(r.price) from room as r inner join hotel as h on r.hotel_No=h.hotel_No where h.name='Brownstone hotel');
 
 #15.List the average price of a room grouped by city.
 select avg(r.price),h.name from room r left join hotel h on r.hotel_No=h.hotel_No group by h.hotel_No;
