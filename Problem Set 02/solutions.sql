@@ -20,7 +20,7 @@ alter table gardener modify exper varchar(30);
 select p1.name from plant as p1 inner join planted p2 on p1.plantid=p2.plantid where p2.seeds<20 and month(date1)='04' and day(date1)='14';
 
 #5.List the amount of sunlight and water to all plants with names that start with letter 'c' or letter 'r'.
-select name,sunlight,water from plant where name like 'c%' or 'r%';
+select name,sunlight,water from plant as p where p.name like 'c%'  or p.name like 'r%';
 
 #6.Write a valid SQL statement that displays the plant name and the total amount of seed required for each plant that were plant in the 
 #garden. The output should be in descending order of plant name.
