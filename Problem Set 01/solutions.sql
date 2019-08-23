@@ -4,10 +4,16 @@ select * from hotel;
 select * from room;
 
 #1.List full details of all hotels.
-select * from hotel;
+select h.*,r.room_No,r.RType,r.Price,b.guest_No,g.Name as Guest_name,g.city as Guest_city,b.Date_From,b.Date_To from 
+hotel as h inner join room as r on h.hotel_No=r.hotel_No 
+inner join booking b on h.hotel_No=b.hotel_No and r.room_No=b.room_No
+inner join guest g on b.guest_No=g.guest_No;
 
 #2.List full details of all hotels in New York.
-select * from hotel where city='New York';
+select h.*,r.room_No,r.RType,r.Price,b.guest_No,g.Name as Guest_name,g.city as Guest_city,b.Date_From,b.Date_To from 
+hotel as h inner join room as r on h.hotel_No=r.hotel_No 
+inner join booking b on h.hotel_No=b.hotel_No and r.room_No=b.room_No
+inner join guest g on b.guest_No=g.guest_No where h.city ='New York';
 
 #3.List the names and cities of all guests, ordered according to their cities.
 select name,city from guest order by city;
