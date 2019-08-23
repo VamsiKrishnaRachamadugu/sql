@@ -36,6 +36,7 @@ Insert into planted values(2, 2, 2 , '2012-04-19', 12);
 Insert into planted values(3, 3, 3 , '2012-04-25', 38); 
 Insert into planted values(4, 2, 0 , '2012-04-30', 30); 
 Insert into planted values(5, 2, 0 , '2012-04-15', 30); 
+#Insert into planted values(0, 0, 0 , cast('18-APR-2012' as date.format: "dd-mon-yyyy"), 28); 
 
 /* Set-up for picked Table */
 Insert into picked values(0, 2, 0 , '2012-08-18', 28, 2.32); 

@@ -53,6 +53,7 @@ inner join employee as e2 on e1.managerid=e2.e_id where e2.name='Natasha Stevens
 select e.name,d.depname,d.depmanager,count(e.name) over (partition by depname) as count_no from employee as e 
 inner join dept as d on e.dep_id=d.dep_id   where depname='Health';
 
+
 #12)Display the Department id,Employee ids and Manager ids for the Communications department
 select d.dep_id,e_id,managerid from employee e inner join dept d on e.dep_id=d.dep_id where d.depname='Communications';
 
