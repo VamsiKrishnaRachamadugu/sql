@@ -50,14 +50,14 @@ select e1.name from employee as e1
 inner join employee as e2 on e1.managerid=e2.e_id where e2.name='Natasha Stevens'  ;
 
 #11)Display the Employee name,Employee count,Dep name,Dept manager in the Health department
-select e.name,d.depname,d.depmanager,count(*) over (partition by depname) as count_no from employee as e 
+select e.name,d.depname,d.depmanager,count(e.name) over (partition by depname) as count_no from employee as e 
 inner join dept as d on e.dep_id=d.dep_id   where depname='Health';
 
 #12)Display the Department id,Employee ids and Manager ids for the Communications department
 select d.dep_id,e_id,managerid from employee e inner join dept d on e.dep_id=d.dep_id where d.depname='Communications';
 
 #13)Select the Average Expenses for Each dept with Dept id and Dept name
-select d.depname,avg(salary) from employee e inner join dept d on e.dep_id=d.dep_id  group by e.dep_id;
+select d.depname,avg(salary) from employee e inner join dept d on e.dep_id=d.dep_id  group by d.depname;
 
 #14)Select the total expense for the department finance
 select sum(salary) as total_expense from employee e inner join dept d on e.dep_id=d.dep_id where d.depname='finance';
@@ -69,10 +69,10 @@ inner join dept d on e.dep_id=d.dep_id group by e.dep_id)
 as a where salary_rank =1;
 
 #16)Select the count of Employees in each department
-select count(e.e_id)as total_employees,d.depname from employee as e inner join dept as d on e.dep_id=d.dep_id group by e.dep_id;
+select count(e.e_id)as total_employees,d.depname from employee as e inner join dept as d on e.dep_id=d.dep_id group by d.depname;
 
 #17)Select the count of Employees in each department having salary <10000
-select count(e.e_id) as emp_count,d.depname from employee as e inner join dept as d on e.dep_id=d.dep_id where salary<10000 group by e.dep_id  ;
+select count(e.e_id) as emp_count,d.depname from employee as e inner join dept as d on e.dep_id=d.dep_id where salary<10000 group by d.depname  ;
 
 #18)Select the total number of Employees in Dept id D04
 select count(*)as total_employees from employee where dep_id='D04';
