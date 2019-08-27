@@ -123,14 +123,14 @@ as a where a.mve_count>=2;
 -- (Hint: This query is more difficult to write in SQLite than other systems; 
 -- you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.) (1 point possible)
 select title,max(avg_rating) from(
-select title,avg(stars) as avg_rating from movie as m join rating as r on m.mID=r.mID group by r.mID order by avg_rating desc)
+select title,avg(stars) as avg_rating from movie as m join rating as r on m.mID=r.mID group by title order by avg_rating desc)
 as a;
 
 -- 20.Find the movie(s) with the lowest average rating. Return the movie title(s) and average rating. 
 -- (Hint: This query may be more difficult to write in SQLite than other systems; you might think of it as 
 -- finding the lowest average rating and then choosing the movie(s) with that average rating.) (1 point possible)
 select title,min(avg_rating) from(
-select title,avg(stars) as avg_rating from movie as m join rating as r on m.mID=r.mID group by r.mID order by avg_rating )
+select title,avg(stars) as avg_rating from movie as m join rating as r on m.mID=r.mID group by title order by avg_rating )
 as a;
 
 
@@ -140,9 +140,4 @@ as a;
 select title, director, stars from(
 select m.title,m.director,r.stars,dense_rank() over (order by r.stars desc) as star_rating from movie as m join rating as r on m.mID=r.mID)
 as a where star_rating=1 and a.director is not null;
-
-
-
-
-
 
