@@ -45,7 +45,8 @@ inner join booking as b on g.guest_No=b.guest_No
 inner join hotel as h on b.hotel_No=h.hotel_No where month(Date_From)=8 and h.city='New York'; 
 
 #12.List the hotel names and room numbers of any hotel rooms that have not been booked.
-select  h.name,r.hotel_no,r.room_No from room r left join booking b on r.room_No=b.room_No inner join hotel h on h.hotel_no=r.hotel_no where b.room_No is null;
+select  h.name,r.hotel_no,r.room_No from room r left join booking b on r.room_No=b.room_No inner join hotel h
+ on h.hotel_no=r.hotel_no where b.room_No is null;
 
 #13.List the hotel name and city of the hotel with the highest priced room.
 select h.name,h.city from  (
@@ -58,4 +59,4 @@ select h.name,r.room_No,h.city,r.price from room as r inner join hotel as h on r
 (select min(r.price) from room as r inner join hotel as h on r.hotel_No=h.hotel_No where h.name='Brownstone hotel');
 
 #15.List the average price of a room grouped by city.
-select avg(r.price),h.name from room r left join hotel h on r.hotel_No=h.hotel_No group by h.hotel_No;
+select avg(r.price),h.name from room r left join hotel h on r.hotel_No=h.hotel_No group by h.name;
