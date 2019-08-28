@@ -75,4 +75,6 @@ join Highschooler h join Friend as f1 on a.ID1=f1.ID2
 where h.name='Cassandra') as b) as c on h.ID=c.ID1;
 
 -- 14.Find the name and grade of the student(s) with the greatest number of friends. (1 point possible)
+select h.name,h.grade from highschooler h inner join Friend f on h.ID=f.ID1 group by f.ID2 having count(ID2)=
+(select max(c) from (select count(id2) as c from friend group by id1)as a) ;
 
