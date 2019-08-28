@@ -62,13 +62,17 @@ select ID2,count(ID2) as count from Friend group by ID1)as a1 group by ID2)  as 
 
 -- 13.Find the number of students who are either friends with Cassandra or are friends of friends of Cassandra. 
 -- Do not count Cassandra, even though technically she is a friend of a friend.
-select * from Highschooler;
-select * from Friend where ID2 in( 1689,1247);
-
-select h.name from Highschooler h  join(
-select a.ID1,f1.ID1 from(
+select h.name from Highschooler as h join(select distinct b.id1 from(
+select a.ID1,f1.ID1 as 'id2' from(
 select f.ID1 from Highschooler h  join Friend as f on h.ID=f.ID2 where h.name='Cassandra') as a
 join Highschooler h join Friend as f1 on a.ID1=f1.ID2 
-where h.name='Cassandra') as b on h.ID=b.ID1;
+where h.name='Cassandra') as b 
+union 
+select distinct id2 from(
+select a.ID1,f1.ID1 as 'id2' from(
+select f.ID1 from Highschooler h  join Friend as f on h.ID=f.ID2 where h.name='Cassandra') as a
+join Highschooler h join Friend as f1 on a.ID1=f1.ID2 
+where h.name='Cassandra') as b) as c on h.ID=c.ID1;
 
+-- 14.Find the name and grade of the student(s) with the greatest number of friends. (1 point possible)
 
