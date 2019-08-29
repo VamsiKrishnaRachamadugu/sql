@@ -90,5 +90,4 @@ on m.born_in=p.place_no or m.living_in=p.place_no left join concert as con on
 con.concert_in=p.place_no left join performance as per1 on con.concert_no=per1.performed_in 
 left join band as b on per1.performed =b.band_no  where p.place_town='Glasgow';
 
--- 15.Jeff Dawn plays in a band with someone who plays in a band with Sue Little. Who is it and what are the bands? (1 point possible)
 
