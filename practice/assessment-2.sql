@@ -92,16 +92,18 @@ on e.DESC_ID=d.DESC_ID left join Place as p on e.PLACE_ID=p.PLACE_ID  left join 
 -- "Fetch DESC_NAME,PLACE_DESC,PROJ_NAME
 -- List how mony employess are working as a DEVELOPER in respective PLACE and PROJECT. Also SHOW rest of count as OTHERS in all the fields and "
 
-CASE WHEN d.ROLE_TYP != 'DEVELOPER'
-			then 'Others' 
-            else 'DEVELOPER' end as ROLE_TYP,
-            CASE WHEN d.ROLE_TYP != 'DEVELOPER'
-			then 'Others' 
-            else p.PLACE_DESC end as PLACE_DESC,
-             CASE WHEN d.ROLE_TYP != 'DEVELOPER'
-			then 'Others' 
-            else pr.PROJ_NAME end as PROJ_NAME*/
-            
+select 
+CASE WHEN d.ROLE_TYP='DEVELOPER' THEN D.ROLE_TYP ELSE 'OTHERS' END AS DERV_ROLE_TYP,
+CASE WHEN d.ROLE_TYP ='DEVELOPER'  THEN p.PLACE_DESC ELSE 'OTHERS' END AS DERV_PLACE_DESC ,
+CASE WHEN d.ROLE_TYP='DEVELOPER' THEN pr.PROJ_NAME ELSE 'OTHERS'  END AS DERV_PROJ_DESC,
+count(e.emp_id) from Employee as e 
+left  join Designation as d 
+on e.DESC_ID=d.DESC_ID and d.ROLE_TYP='DEVELOPER'
+left  join Place as p
+on e.PLACE_ID=p.PLACE_ID  
+left  join Project as pr  on 
+ e.PROJ_ID=pr.PROJ_ID 
+ group by DERV_ROLE_TYP,DERV_PLACE_DESC,DERV_PROJ_DESC ;
             
             
 select d.desc_name,p.PLACE_DESC,pr.PROJ_NAME,e.emp_name,d.ROLE_TYP from Employee as e 
@@ -111,24 +113,9 @@ left  join Place as p
 on e.PLACE_ID=p.PLACE_ID  
 left  join Project as pr  on 
  e.PROJ_ID=pr.PROJ_ID 
- 
-  
- 
  group by d.ROLE_TYP,p.PLACE_DESC,pr.PROJ_NAME ;            
             
-            
-select 
-CASE WHEN d.ROLE_TYP='DEVELOPER' THEN D.ROLE_TYP ELSE 'OTHERS' END AS DERV_ROLE_TYP,
-CASE WHEN d.ROLE_TYP ='DEVELOPER'  THEN p.PLACE_DESC ELSE 'OTHERS' END AS DERV_PLACE_DESC ,
-CASE WHEN d.ROLE_TYP='DEVELOPER' THEN pr.PROJ_NAME ELSE 'OTHERS'  END AS DERV_PLACE_DESC,
-count(e.emp_id) from Employee as e 
-left  join Designation as d 
-on e.DESC_ID=d.DESC_ID and d.ROLE_TYP='DEVELOPER'
-left  join Place as p
-on e.PLACE_ID=p.PLACE_ID  
-left  join Project as pr  on 
- e.PROJ_ID=pr.PROJ_ID 
- group by DERV_ROLE_TYP,DERV_PLACE_DESC,DERV_PLACE_DESC ;
+
  
 --  "Fetch EMPLOYEE_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
 
@@ -176,12 +163,15 @@ select s.Salesman_Name, c.Cust_Name, c.city as Customer_city,s.city as Salesman_
  from  Customer as c   inner join Salesman as s on c.Salesman_id=s.Salesman_id
 where  c.city!=s.City;
 
+select s.Salesman_Name, c.Cust_Name, c.city as Customer_city,s.city as Salesman_City
+ from  Customer as c   inner join Salesman as s on c.Salesman_id=s.Salesman_id
+where  c.city<>s.City;
 -- Fetch Salesman_Name, City, Monthly_target, Amount_purchase_by_Customer 
 -- Show only the Sales Man who achieved the monthly Target
 --  Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
 select  s.Salesman_Name,s.City,s.Monthly_Target,sum(Purchased_Amount) as Amount_purchase_by_Customer
 from  Customer as c   inner join Salesman as s on c.Salesman_id=s.Salesman_id
-group by c.Salesman_id having Amount_purchase_by_Customer>s.Monthly_Target;
+group by s.Salesman_Name,s.City,s.Monthly_Target having Amount_purchase_by_Customer>=s.Monthly_Target;
 
 -- Fetch Cust_Name, City,Priority_num,Purchased_amount
 -- Show only the customer information who is top two  purchased more in their respective priority
@@ -189,6 +179,8 @@ group by c.Salesman_id having Amount_purchase_by_Customer>s.Monthly_Target;
 select Cust_Name, City,Priority_num,Purchased_amount from(
  select Cust_Name, City,Priority_num,Purchased_amount,row_number() over (partition by Priority_num order by Purchased_amount desc) as rn_amount from customer) as a
  where rn_amount<=3;
+ 
+
  
 --  Fetch Salesman_Name, City, Amount_purchase_by_Customer 
 -- Show only the Sales Man who  Amount_purchase_by_Customer is less than the avg monthly target of all sales person
@@ -198,13 +190,32 @@ select Cust_Name, City,Priority_num,Purchased_amount from(
 from  Customer as c   right join Salesman as s on c.Salesman_id=s.Salesman_id 
 group by s.Salesman_id having Amount_purchase_by_Customer<(select avg(s.Monthly_Target) as avg_monthly_target from Salesman as s );
 
+
+--  select s.Salesman_Name,s1.Salesman_Name as Sales_Manager_Name ,s1.Monthly_target,sum(c.Purchased_Amount)  as Amount_purchase_by_Customer
+--  from Salesman as s inner join Salesman as s1 on s.Sales_Manager_id=s1.Salesman_id inner join Customer as c on 
+--  c.Salesman_id=s.Salesman_id 
+-- group by s.Salesman_id having s1.Monthly_target<Amount_purchase_by_Customer;//
 -- Fetch  Sales_Manager_Name, Salesman_Name,Manager Monthly_target,  Amount_purchase_by_Customer 
--- Show only the Sales Man who's manager is achieved the monthly Target based on his reportees purchase detail
+--  Show only the Sales Man who's manager is achieved the monthly Target based on his reportees purchase detail
 --  Sum of Amount_purchase_by_Customer -- Amount purchased by customer which is sold by it reportees
- select s.Salesman_Name,s1.Salesman_Name as Sales_Manager_Name ,s1.Monthly_target,sum(c.Purchased_Amount)  as Amount_purchase_by_Customer
- from Salesman as s inner join Salesman as s1 on s.Sales_Manager_id=s1.Salesman_id inner join Customer as c on 
- c.Salesman_id=s.Salesman_id 
-group by s.Salesman_id having s1.Monthly_target<Amount_purchase_by_Customer;
+select emp_salesman_name,mgr_salesman_name,mgr_Monthly_Target,emp_Amount_purchase_by_Customer
+from
+(select distinct
+mgr.salesman_id as mgr_salesman_id,
+mgr.salesman_name as mgr_salesman_name,
+emp.salesman_name as emp_salesman_name,
+mgr.Monthly_Target as mgr_Monthly_Target,
+sum(c.Purchased_Amount) over (partition by mgr.salesman_id) as mgr_Amount_purchase_by_Customer ,
+sum(c.Purchased_Amount) over (partition by emp.salesman_id) as emp_Amount_purchase_by_Customer 
+from
+salesman emp
+inner join 
+Salesman mgr
+on emp.Sales_Manager_id = mgr.salesman_id 
+inner join 
+customer c
+on c.salesman_id=emp.salesman_id  ) tmp
+where mgr_Monthly_Target <= mgr_Amount_purchase_by_Customer
 
 create table Student(Studen_Id	integer,Student_name	varchar(20),Student_Detail_id integer);
 create table Student_details(Student_Detail_Id integer,City_id integer,	Class_id integer,Start_date date,End_date date);
@@ -259,6 +270,14 @@ inner join Class as cl on sd.Class_Id=cl.Class_Id)as a where rn_student_date=1;
 
 -- Fetch All Student_name,City_name,Class_Name,Classroom_num
 -- Show only the information of all the student where he stands as of today'S date
+select Student_name,City_name,class,Classroom_num from student  a inner join
+student_details b
+on a.Student_Detail_Id=b.Student_Detail_Id 
+and b.start_date <= current_date and b.end_date >= current_date
+inner join  city c on b.City_id=c.City_id
+inner join class d on b.Class_id=d.Class_id 
+and d.start_date <= current_date and d.end_date >= current_date
+
 
 
 -- Fetch All Student_name,City_name
@@ -283,8 +302,6 @@ on e.PLACE_ID=p.PLACE_ID
 left  join Project as pr  on 
  e.PROJ_ID=pr.PROJ_ID 
  group by DERV_ROLE_TYP,DERV_PLACE_DESC,DERV_PROJ_DESC ;
- 
- EMP_NAME	DESC_NAME	PLACE_DESC	PROJ_NAME
 
  
  
