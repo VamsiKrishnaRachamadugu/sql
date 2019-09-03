@@ -27,8 +27,7 @@ join Reviewer as r on r1.rID=r.rID order by r.name,m.title,r1.stars;
 -- select rID,mID,count(rating_count) from(
 -- select rID,mID,stars,ratingDate,row_number() over(partition by rID,mID order by ratingDate,stars) as rating_count from Rating ) 
 -- as a group by a.rID,a.mID having count(rating_count)=2;
- SELECT r.name,m.title
-   FROM Reviewer as r
+ SELECT r.name,m.title FROM Reviewer as r
    JOIN Rating r1 on r1.rID = r.rID
    JOIN Rating as r2 on r2.rID = r.rID and r2.mID = r1.mID
    JOIN Movie as m on m.mID = r1.mID
