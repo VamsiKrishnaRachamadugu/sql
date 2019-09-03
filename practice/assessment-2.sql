@@ -103,7 +103,7 @@ CASE WHEN d.ROLE_TYP ='DEVELOPER'  THEN p.PLACE_DESC ELSE 'OTHERS' END AS DERV_P
 CASE WHEN d.ROLE_TYP='DEVELOPER' THEN pr.PROJ_NAME ELSE 'OTHERS'  END AS DERV_PROJ_DESC,
 count(e.emp_id) from Employee as e 
 left  join Designation as d 
-on e.DESC_ID=d.DESC_ID and d.ROLE_TYP='DEVELOPER'
+on e.DESC_ID=d.DESC_ID
 left  join Place as p
 on e.PLACE_ID=p.PLACE_ID  
 left  join Project as pr  on 
