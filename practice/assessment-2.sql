@@ -64,6 +64,11 @@ SELECT e.EMP_ID,e.EMP_NAME,CASE WHEN d.DESC_NAME is null
 on e.DESC_ID=d.DESC_ID left join Place as p on e.PLACE_ID=p.PLACE_ID  left join Project as pr  on 
  e.PROJ_ID=pr.PROJ_ID;
  
+ SELECT e.EMP_ID,e.EMP_NAME,coalesce(d.DESC_NAME, 'Unknown Designation') as DESC_NAME,
+                                coalesce( p.PLACE_DESC , 'Others' )  as PLACE_DESC ,
+                                coalesce( pr.PROJ_NAME ,'Unknown Projec' ) as PROJ_NAME from Employee as e left  join Designation as d 
+on e.DESC_ID=d.DESC_ID left join Place as p on e.PLACE_ID=p.PLACE_ID  left join Project as pr  on 
+ e.PROJ_ID=pr.PROJ_ID;
  
  -- "Fetch EMP_ID,EMP_NAME,PROJECT_ROLE
 
@@ -104,17 +109,16 @@ on e.PLACE_ID=p.PLACE_ID
 left  join Project as pr  on 
  e.PROJ_ID=pr.PROJ_ID 
  group by DERV_ROLE_TYP,DERV_PLACE_DESC,DERV_PROJ_DESC ;
-            
-            
-select d.desc_name,p.PLACE_DESC,pr.PROJ_NAME,e.emp_name,d.ROLE_TYP from Employee as e 
-left  join Designation as d 
-on e.DESC_ID=d.DESC_ID  and ROLE_TYP='DEVELOPER' 
-left  join Place as p
-on e.PLACE_ID=p.PLACE_ID  
-left  join Project as pr  on 
- e.PROJ_ID=pr.PROJ_ID 
- group by d.ROLE_TYP,p.PLACE_DESC,pr.PROJ_NAME ;            
-            
+
+-- select d.desc_name,p.PLACE_DESC,pr.PROJ_NAME,e.emp_name,d.ROLE_TYP from Employee as e 
+-- left  join Designation as d 
+-- on e.DESC_ID=d.DESC_ID  and ROLE_TYP='DEVELOPER' 
+-- left  join Place as p
+-- on e.PLACE_ID=p.PLACE_ID  
+-- left  join Project as pr  on 
+--  e.PROJ_ID=pr.PROJ_ID 
+--  group by d.ROLE_TYP,p.PLACE_DESC,pr.PROJ_NAME ;            
+--             
 
  
 --  "Fetch EMPLOYEE_NAME,DESC_NAME,PLACE_DESC,PROJ_NAME
@@ -188,7 +192,7 @@ select Cust_Name, City,Priority_num,Purchased_amount from(
  select  s.Salesman_Name,s.City,s.Monthly_Target,case when c.Purchased_Amount is null then 0
 													  else sum(c.Purchased_Amount) end as Amount_purchase_by_Customer
 from  Customer as c   right join Salesman as s on c.Salesman_id=s.Salesman_id 
-group by s.Salesman_id having Amount_purchase_by_Customer<(select avg(s.Monthly_Target) as avg_monthly_target from Salesman as s );
+group by s.Salesman_Name,s.City,s.Monthly_Target having Amount_purchase_by_Customer<(select avg(s.Monthly_Target) as avg_monthly_target from Salesman as s );
 
 
 --  select s.Salesman_Name,s1.Salesman_Name as Sales_Manager_Name ,s1.Monthly_target,sum(c.Purchased_Amount)  as Amount_purchase_by_Customer
@@ -215,7 +219,7 @@ on emp.Sales_Manager_id = mgr.salesman_id
 inner join 
 customer c
 on c.salesman_id=emp.salesman_id  ) tmp
-where mgr_Monthly_Target <= mgr_Amount_purchase_by_Customer
+where mgr_Monthly_Target <= mgr_Amount_purchase_by_Customer;
 
 create table Student(Studen_Id	integer,Student_name	varchar(20),Student_Detail_id integer);
 create table Student_details(Student_Detail_Id integer,City_id integer,	Class_id integer,Start_date date,End_date date);
@@ -276,7 +280,7 @@ on a.Student_Detail_Id=b.Student_Detail_Id
 and b.start_date <= current_date and b.end_date >= current_date
 inner join  city c on b.City_id=c.City_id
 inner join class d on b.Class_id=d.Class_id 
-and d.start_date <= current_date and d.end_date >= current_date
+and d.start_date <= current_date and d.end_date >= current_date;
 
 
 
@@ -287,7 +291,7 @@ inner join Student_details as sd on
 s.Student_Detail_id=sd.Student_Detail_id inner join City as c on sd.City_Id=c.City_Id
 inner join Class as cl on sd.Class_Id=cl.Class_Id where c.city_name='Chennai' or cl.Classroom_num in(301,310,320);
 
-select substr(Student_name,instr(Student_name,'a')) from Student;
+select substr(Student_name,instr(Student_name,'a',2)) from Student;
 
 
 select 
