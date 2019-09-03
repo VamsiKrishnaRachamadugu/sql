@@ -10,3 +10,10 @@ insert into trip values('TP08','MUM','BGL','20:20','23:45',5000,'N');
 insert into trip values('TP09','CHN','HYD','11:25','13:45',3000,'N');
 insert into trip values('TP10','HYD','CHN','20:30','22:20',4500,'Y');
 insert into trip values('TP11','BGL','CHN','23:45','1:05',3900,'Y');
+
+select * from trip;
+
+select t1.TRIP_SOURCE,t2.TRIP_DESTINATION,t1.TRIP_COST+t2.TRIP_COST AS Total_Cost
+from trip as t1 inner join trip as t2 on
+t1.TRIP_DESTINATION=t2.TRIP_SOURCE
+where t1.TRIP_SOURCE='CHN' AND t2.TRIP_DESTINATION='NDL';
