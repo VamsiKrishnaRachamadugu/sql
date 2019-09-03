@@ -181,8 +181,8 @@ group by s.Salesman_Name,s.City,s.Monthly_Target having Amount_purchase_by_Custo
 -- Show only the customer information who is top two  purchased more in their respective priority
 -- Sum of Amount_purchase_by_Customer -- Amount purchased by corresponding customer
 select Cust_Name, City,Priority_num,Purchased_amount from(
- select Cust_Name, City,Priority_num,Purchased_amount,row_number() over (partition by Priority_num order by Purchased_amount desc) as rn_amount from customer) as a
- where rn_amount<=3;
+ select Cust_Name, City,Priority_num,Purchased_amount,dense_rank() over (partition by Priority_num order by Purchased_amount desc) as rn_amount from customer) as a
+ where rn_amount<=2;
  
 
  
@@ -192,7 +192,8 @@ select Cust_Name, City,Priority_num,Purchased_amount from(
  select  s.Salesman_Name,s.City,s.Monthly_Target,case when c.Purchased_Amount is null then 0
 													  else sum(c.Purchased_Amount) end as Amount_purchase_by_Customer
 from  Customer as c   right join Salesman as s on c.Salesman_id=s.Salesman_id 
-group by s.Salesman_Name,s.City,s.Monthly_Target having Amount_purchase_by_Customer<(select avg(s.Monthly_Target) as avg_monthly_target from Salesman as s );
+group by s.Salesman_Name,s.City,s.Monthly_Target having Amount_purchase_by_Customer<
+(select avg(s.Monthly_Target) as avg_monthly_target from Salesman as s );
 
 
 --  select s.Salesman_Name,s1.Salesman_Name as Sales_Manager_Name ,s1.Monthly_target,sum(c.Purchased_Amount)  as Amount_purchase_by_Customer
@@ -218,7 +219,8 @@ Salesman mgr
 on emp.Sales_Manager_id = mgr.salesman_id 
 inner join 
 customer c
-on c.salesman_id=emp.salesman_id  ) tmp
+on c.salesman_id=emp.salesman_id  
+) tmp
 where mgr_Monthly_Target <= mgr_Amount_purchase_by_Customer;
 
 create table Student(Studen_Id	integer,Student_name	varchar(20),Student_Detail_id integer);
