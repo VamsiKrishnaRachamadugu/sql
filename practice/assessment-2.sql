@@ -5,7 +5,7 @@ desc employee;
 create table employee(EMP_ID integer,EMP_NAME varchar(20),DESC_ID	integer,PLACE_ID integer,PROJ_ID integer);
 create table Designation(DESC_ID integer,DESC_NAME varchar(20),ROLE_TYP varchar(20));
 create table Place(PLACE_ID	integer,PLACE_DESC	varchar(20),PLACE_TYP varchar(20));
-create table Project(PROJ_ID integer,PROJ_NAME varchar(20));
+create table Project(PROJ_ID integer,PROJ_NAME varchar(40));
 
 insert into employee values(1,'Vijaykumar',10,1,3);
 insert into employee values(2,'Raja',20,3,4);
@@ -53,20 +53,14 @@ insert into project values(10,'Flipkart');
 -- PLACE_DESC -- >If  Place Description is not avaible then show 'Others' , If  Place Description is available but if Place Type is newyork  then show 'USA'
 -- PROJ_NAME --> Designation is not avaible in Department table then show 'Unknown Project'"								
 SELECT e.EMP_ID,e.EMP_NAME,CASE WHEN d.DESC_NAME is null
-								then 'Unknown Designation' 
+								then 'Unknown Designation' when d.ROLE_TYP='Lead' then 'TEAMLEAD'
                                 else d.DESC_NAME  end as DESC_NAME ,
                                 CASE WHEN p.PLACE_DESC is null
-								then 'Others' 
+								then 'Others' when p.PLACE_DESC='Newyork' then 'USA'
                                 else p.PLACE_DESC   end as PLACE_DESC ,
                                 CASE WHEN pr.PROJ_NAME is null
-								then 'Unknown Projec' 
+								then 'Unknown Project' 
                                 else pr.PROJ_NAME   end as PROJ_NAME from Employee as e left  join Designation as d 
-on e.DESC_ID=d.DESC_ID left join Place as p on e.PLACE_ID=p.PLACE_ID  left join Project as pr  on 
- e.PROJ_ID=pr.PROJ_ID;
- 
- SELECT e.EMP_ID,e.EMP_NAME,coalesce(d.DESC_NAME, 'Unknown Designation') as DESC_NAME,
-                                coalesce( p.PLACE_DESC , 'Others' )  as PLACE_DESC ,
-                                coalesce( pr.PROJ_NAME ,'Unknown Projec' ) as PROJ_NAME from Employee as e left  join Designation as d 
 on e.DESC_ID=d.DESC_ID left join Place as p on e.PLACE_ID=p.PLACE_ID  left join Project as pr  on 
  e.PROJ_ID=pr.PROJ_ID;
  
@@ -160,6 +154,11 @@ insert into Salesman values(3,'Raju','Hyderabad',4,21000);
 insert into Salesman values(4,'Srinath','Mumbai',5,9000);
 insert into Salesman values(5,'Vijay','Chennai',6,4000);
 insert into Salesman values(6,'Balaji','Hyderabad',6,15000);
+select * from salesman;
+
+
+ 
+ SET SQL_SAFE_UPDATES = 0;
 
 -- Fetch Salesman_Name, Cust_Name, Customer_city,Salesman_City
 -- Show only the customer and salesman whole belong to the different City 
@@ -480,3 +479,4 @@ on c.salesman_id=emp.salesman_id
 
 
  
+select t1.TRIP_SOURCE,t2.TRIP_SOURCE,t2.TRIP_DESTINATION, t1.TRIP_COST+t2.TRIP_COST AS Total_Cost   from trip as t1 inner join trip as t2 on t1.TRIP_DESTINATION=t2.TRIP_SOURCE  and t1.TRIP_SOURCE='NDL' AND t2.TRIP_DESTINATION='CHN' LIMIT 0, 300

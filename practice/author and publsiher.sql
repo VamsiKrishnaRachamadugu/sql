@@ -19,7 +19,7 @@ insert into publisher values('PB04','Mark Book Sales','New Jersy',str_to_date('5
 -- 1.Fetch publisher information who have publish_city <> author_city and check if publish_city = author_country 
 -- . display the correct publisher_city along with other publisher information based on author_city
 select a.AUTHOR_CITY as publisher_city,p.PUBLISH_ID, PUBLISH_NAME,  PUBLISH_START_DATE, BRANCHES from publisher as p inner join author as a 
-on  p.PUBLISH_CITY<>a.AUTHOR_CITY
+on  a.PUBLISH_ID=p.PUBLISH_ID and p.PUBLISH_CITY<>a.AUTHOR_CITY
 and  p.PUBLISH_CITY=a.AUTHOR_COUNTRY ;
 
 -- 2.Fetch authors_name, author_country, publish_city, publish_start_date, branches who have publications with most number of branches by century
@@ -38,9 +38,10 @@ on  a.AUTHOR_CITY=p.PUBLISH_CITY and a.publish_id=p.publish_id
  a.AUTHOR_COUNTRY=m.AUTHOR_COUNTRY and a.publish_id=p.publish_id;
  
 --  4.Fetch authors who have incorrect author_country for same author_city. Display correct author_country along with all author_information
-select a.AUTHOR_NAME,  a.AUTHOR_CITY,case when a.AUTHOR_CITY = 'Berlin' then  'Germany' 
-												
-											else a.AUTHOR_COUNTRY end as AUTHOR_COUNTRY from author as a;
+select AUTHOR_ID, AUTHOR_NAME,case when AUTHOR_CITY='Berlin' then 'EUROPE'
+									end as AUTHOR_COUNTRY, AUTHOR_CITY, PUBLISH_ID from(
+select a.* from author as a inner join author as a1
+on a.AUTHOR_CITY=a1.AUTHOR_CITY and a.AUTHOR_COUNTRY!=a1.AUTHOR_COUNTRY) as a;
 
 --  5.Fetch authors who do not have publisher from their country
 select a.AUTHOR_NAME from author as a left join publisher as p 
@@ -56,7 +57,7 @@ select a.AUTHOR_NAME from author as a where a.AUTHOR_NAME like '_._.%';
 select a.AUTHOR_NAME from author as a where a.AUTHOR_NAME not like '_.%';
 -- 9.Fetch author details who have lower case in author_country
 select a.* from author as a where lower(substr(a.author_country,2)) like binary substr(a.author_country,2) ;
--- select a.AUTHOR_NAME from author as a where a.AUTHOR_NAME regexp '[a-z]';
+--  select a.AUTHOR_NAME from author as a where author_country regexp '[A-Z]+[a-z]';
 select a.* from author as a where ascii(lower(substr(a.author_country,2)))=ascii(substr(a.author_country,2)) ;
 
 
